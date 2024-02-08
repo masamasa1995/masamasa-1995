@@ -7,14 +7,10 @@ from sqlalchemy import create_engine
 
 st.title('ネイル棚卸')
 
-connection_config = {
-    'user':'postgres',
-    'password':'postgres',
-    'host':'192.168.0.15',
-    'port':'5432',
-    'database':'postgres',
-}
+conn = st.connection("postgresql", type="sql")
 
-engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**connection_config))
-df = pd.read_sql(sql='select *  from mt_equipment', con=engine)
-df
+# Perform query.
+df = conn.query('SELECT * FROM mt_equipment;', ttl="10m")
+
+for row in df.itertuples():
+    st.write(f"{row.equip_nm}")
